@@ -19,7 +19,7 @@ General code style
 
 * Space-Indentation with 4 spaces (TAB's are forbidden).
 
-* Every line contains maximum 80 chars (+ line break CLRF).
+* Every line contains maximum 80 chars (+ line break CRLF).
 
 * No right-trailing spaces.
 
