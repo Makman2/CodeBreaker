@@ -23,6 +23,8 @@ General code style
 
 * No right-trailing spaces.
 
+* File ends with line break CRLF!
+
 * Camel-case naming is preferred when exposing to public.
   ```cpp
   int FooBarFunction();
