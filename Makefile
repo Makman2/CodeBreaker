@@ -40,9 +40,9 @@ CODEBREAKER_BUILD_DEBUG_PATHDEPTH=\
     $(shell echo $(CODEBREAKER_BUILD_DEBUG_SLASHMATCH)+1 | bc)
 
 CODEBREAKER_BUILD_DEBUG_REVERTPATH:=$(shell \
-printf ".." ;                                                       \
+echo -n ".." ;                                                      \
 i=2 ; while [[ $$i -le $(CODEBREAKER_BUILD_DEBUG_PATHDEPTH) ]] ; do \
-	printf "/.." ;                                                  \
+	echo -n "/.." ;                                                 \
 	((i = i + 1)) ;                                                 \
 done                                        \
 )
@@ -54,9 +54,9 @@ CODEBREAKER_BUILD_RELEASE_PATHDEPTH=\
     $(shell echo $(CODEBREAKER_BUILD_RELEASE_SLASHMATCH)+1 | bc)
 
 CODEBREAKER_BUILD_RELEASE_REVERTPATH:=$(shell \
-printf ".." ;                                                         \
+echo -n ".." ;                                                        \
 i=2 ; while [[ $$i -le $(CODEBREAKER_BUILD_RELEASE_PATHDEPTH) ]] ; do \
-	printf "/.." ;                                                    \
+	echo -n "/.." ;                                                   \
 	((i = i + 1)) ;                                                   \
 done                                          \
 )
@@ -120,7 +120,7 @@ endif
 	@cd $(CODEBREAKER_BUILD_DEBUG) ; \
 	$(CMAKE) $(CODEBREAKER_RELATIVE_SRC_DEBUG) \
 	         $(CMAKE_FLAGS) $(CMAKE_DEBUG_FLAGS)
-	@echo -n "Building... "
+	@echo "Building... "
 	@$(MAKE) $(MAKE_FLAGS) -C $(CODEBREAKER_BUILD_DEBUG)
 	@echo "DONE"
 
@@ -132,8 +132,8 @@ ifeq ($(wildcard $(CODEBREAKER_BUILD_RELEASE)),)
 endif
 	@cd $(CODEBREAKER_BUILD_RELEASE) ; \
 	$(CMAKE) $(CODEBREAKER_RELATIVE_SRC_RELEASE) \
-	          $(CMAKE_FLAGS) $(CMAKE_RELEASE_FLAGS)
-	@echo -n "Building... "
+	         $(CMAKE_FLAGS) $(CMAKE_RELEASE_FLAGS)
+	@echo "Building... "
 	@$(MAKE) $(MAKE_FLAGS) -C $(CODEBREAKER_BUILD_RELEASE)
 	@echo "DONE"
 
