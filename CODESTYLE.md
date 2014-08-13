@@ -87,7 +87,7 @@ Classes
   /// @details If needed, long description.
   ///
   /// @tparam T
-  
+
   class Foo
   {
       // ...
