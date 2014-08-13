@@ -19,6 +19,6 @@
 *.exe
 *.out
 *.app
-sour
+
 # gedit temporary files
 *~
