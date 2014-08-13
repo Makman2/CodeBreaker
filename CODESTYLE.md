@@ -17,6 +17,11 @@ try to show what is meant in the enumeration.
 General code style
 ------------------
 
+* Every code file starts with this line:
+  ```cpp
+  // This file is part of CodeBreaker. License: GPL3
+  ```
+
 * Space-Indentation with 4 spaces (TAB's are forbidden).
 
 * Every line contains maximum 80 chars (+ line break).
