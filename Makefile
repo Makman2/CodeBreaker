@@ -21,6 +21,13 @@ CMAKE_FLAGS=-DCMAKE_C_COMPILER=$(CC) -DCMAKE_CXX_COMPILER=$(CXX)
 CMAKE_DEBUG_FLAGS=-DCMAKE_BUILD_TYPE=debug
 CMAKE_RELEASE_FLAGS=-DCMAKE_BUILD_TYPE=release
 
+# IDE project generator configurations.
+CMAKE_IDE_PATH=ide
+
+CMAKE_IDE_ECLIPSE_PATH=$(CMAKE_IDE_PATH)/eclipse
+CMAKE_IDE_ECLIPSE_GENERATOR_FLAGS=-G "Eclipse CDT4 - Unix Makefiles"
+CMAKE_IDE_ECLIPSE_FLAGS=
+
 # ==============================================================================
 
 
@@ -33,9 +40,9 @@ CODEBREAKER_BUILD_DEBUG_PATHDEPTH=\
     $(shell echo $(CODEBREAKER_BUILD_DEBUG_SLASHMATCH)+1 | bc)
 
 CODEBREAKER_BUILD_DEBUG_REVERTPATH:=$(shell \
-printf ".." ;                                                       \
+echo -n ".." ;                                                      \
 i=2 ; while [[ $$i -le $(CODEBREAKER_BUILD_DEBUG_PATHDEPTH) ]] ; do \
-	printf "/.." ;                                                  \
+	echo -n "/.." ;                                                 \
 	((i = i + 1)) ;                                                 \
 done                                        \
 )
@@ -47,11 +54,25 @@ CODEBREAKER_BUILD_RELEASE_PATHDEPTH=\
     $(shell echo $(CODEBREAKER_BUILD_RELEASE_SLASHMATCH)+1 | bc)
 
 CODEBREAKER_BUILD_RELEASE_REVERTPATH:=$(shell \
-printf ".." ;                                                         \
+echo -n ".." ;                                                        \
 i=2 ; while [[ $$i -le $(CODEBREAKER_BUILD_RELEASE_PATHDEPTH) ]] ; do \
-	printf "/.." ;                                                    \
+	echo -n "/.." ;                                                   \
 	((i = i + 1)) ;                                                   \
 done                                          \
+)
+
+# Pathdepth for IDE - Eclipse
+CMAKE_IDE_ECLIPSE_PATH_SLASHMATCH=\
+    $(shell echo $(CMAKE_IDE_ECLIPSE_PATH) | grep -o / | wc -l)
+CMAKE_IDE_ECLIPSE_PATHDEPTH=\
+    $(shell echo $(CODEBREAKER_BUILD_RELEASE_SLASHMATCH)+1 | bc)
+
+CMAKE_IDE_ECLIPSE_REVERTPATH:=$(shell \
+echo -n ".." ;                                                        \
+i=2 ; while [[ $$i -le $(CMAKE_IDE_ECLIPSE_PATHDEPTH) ]] ; do         \
+	echo -n "/.." ;                                                   \
+	((i = i + 1)) ;                                                   \
+done                                  \
 )
 
 # Construct relative sources.
@@ -60,6 +81,8 @@ CODEBREAKER_RELATIVE_SRC_DEBUG=\
 CODEBREAKER_RELATIVE_SRC_RELEASE=\
     $(CODEBREAKER_BUILD_RELEASE_REVERTPATH)/$(CODEBREAKER_SRC)
 
+CMAKE_IDE_ECLIPSE_RELATIVE_PATH_TO_SRC=\
+    $(CMAKE_IDE_ECLIPSE_REVERTPATH)/$(CODEBREAKER_SRC)
 
 
 
@@ -85,6 +108,8 @@ help:
 	@echo "print          Makefile debug target, displays the values of the"
 	@echo "               variables in this makefile."
 	@echo
+	@echo "IDE-eclipse    Generates a project for the Eclipse IDE from source."
+	@echo
 
 debug:
 ifeq ($(wildcard $(CODEBREAKER_BUILD_DEBUG)),)
@@ -95,7 +120,7 @@ endif
 	@cd $(CODEBREAKER_BUILD_DEBUG) ; \
 	$(CMAKE) $(CODEBREAKER_RELATIVE_SRC_DEBUG) \
 	         $(CMAKE_FLAGS) $(CMAKE_DEBUG_FLAGS)
-	@echo -n "Building... "
+	@echo "Building... "
 	@$(MAKE) $(MAKE_FLAGS) -C $(CODEBREAKER_BUILD_DEBUG)
 	@echo "DONE"
 
@@ -107,8 +132,8 @@ ifeq ($(wildcard $(CODEBREAKER_BUILD_RELEASE)),)
 endif
 	@cd $(CODEBREAKER_BUILD_RELEASE) ; \
 	$(CMAKE) $(CODEBREAKER_RELATIVE_SRC_RELEASE) \
-	          $(CMAKE_FLAGS) $(CMAKE_RELEASE_FLAGS)
-	@echo -n "Building... "
+	         $(CMAKE_FLAGS) $(CMAKE_RELEASE_FLAGS)
+	@echo "Building... "
 	@$(MAKE) $(MAKE_FLAGS) -C $(CODEBREAKER_BUILD_RELEASE)
 	@echo "DONE"
 
@@ -126,6 +151,21 @@ clean-release:
 	@echo -n "Removing build directory for release configuration... "
 	@rm -rf $(CODEBREAKER_BUILD_RELEASE)
 	@echo "DONE"
+
+IDE-eclipse:
+ifeq ($(wildcard $(CMAKE_IDE_ECLIPSE_PATH)),)
+	@echo -n "Creating directory ($(CMAKE_IDE_ECLIPSE_PATH))... "
+	@mkdir -p $(CMAKE_IDE_ECLIPSE_PATH)
+	@echo "DONE"
+endif
+	@echo "Generating project for IDE: Eclipse... "
+	@cd $(CMAKE_IDE_ECLIPSE_PATH) ; \
+	$(CMAKE) $(CMAKE_IDE_ECLIPSE_RELATIVE_PATH_TO_SRC) \
+	         $(CMAKE_IDE_ECLIPSE_GENERATOR_FLAGS) \
+	         $(CMAKE_IDE_ECLIPSE_FLAGS)
+	@echo "DONE"
+	@echo "# Project files for IDE Eclipse written to:"
+	@echo "# $(CMAKE_IDE_ECLIPSE_PATH)."
 
 print:
 	@echo "CC:"
@@ -168,4 +208,20 @@ print:
 	@echo "$(CODEBREAKER_RELATIVE_SRC_DEBUG)"
 	@echo "CODEBREAKER_RELATIVE_SRC_RELEASE:"
 	@echo "$(CODEBREAKER_RELATIVE_SRC_RELEASE)"
+	@echo "CMAKE_IDE_PATH:"
+	@echo "$(CMAKE_IDE_PATH)"
+	@echo "CMAKE_IDE_ECLIPSE_PATH:"
+	@echo "$(CMAKE_IDE_ECLIPSE_PATH)"
+	@echo "CMAKE_IDE_ECLIPSE_GENERATOR_FLAGS:"
+	@echo "$(CMAKE_IDE_ECLIPSE_GENERATOR_FLAGS)"
+	@echo "CMAKE_IDE_ECLIPSE_FLAGS:"
+	@echo "$(CMAKE_IDE_ECLIPSE_FLAGS)"
+	@echo "CMAKE_IDE_ECLIPSE_PATH_SLASHMATCH:"
+	@echo "$(CMAKE_IDE_ECLIPSE_PATH_SLASHMATCH)"
+	@echo "CMAKE_IDE_ECLIPSE_PATHDEPTH:"
+	@echo "$(CMAKE_IDE_ECLIPSE_PATHDEPTH)"
+	@echo "CMAKE_IDE_ECLIPSE_REVERTPATH:"
+	@echo "$(CMAKE_IDE_ECLIPSE_REVERTPATH)"
+	@echo "CMAKE_IDE_ECLIPSE_RELATIVE_PATH_TO_SRC:"
+	@echo "$(CMAKE_IDE_ECLIPSE_RELATIVE_PATH_TO_SRC)"
 
