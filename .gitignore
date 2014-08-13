@@ -25,3 +25,7 @@
 
 # Build directory
 build/*
+
+# IDE projects directory
+ide/*
+
