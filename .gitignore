@@ -22,3 +22,6 @@
 
 # gedit temporary files
 *~
+
+# Build directory
+build/*

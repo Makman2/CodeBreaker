@@ -19,11 +19,9 @@ General code style
 
 * Space-Indentation with 4 spaces (TAB's are forbidden).
 
-* Every line contains maximum 80 chars (+ line break CRLF).
+* Every line contains maximum 80 chars (+ line break).
 
 * No right-trailing spaces.
-
-* File ends with line break CRLF!
 
 * Camel-case naming is preferred when exposing to public.
   ```cpp
@@ -87,7 +85,7 @@ Classes
   /// @details If needed, long description.
   ///
   /// @tparam T
-  
+
   class Foo
   {
       // ...
